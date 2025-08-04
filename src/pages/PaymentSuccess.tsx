@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
-import { supabase } from '@/integrations/supabase/client';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -43,8 +42,10 @@ useEffect(() => {
     }, [reference, user, itemData]);
 
   const verifyPayment = async (reference: string) => {
-  setVerificationStatus('loading');
+  setVerificationStatus('loading');``
   const transactionId = String(reference);
+
+  console.log("transactionId:", transactionId);
 
   try {
     const response = await fetch(`https://api.paystack.co/transaction/verify/${transactionId}`, {
