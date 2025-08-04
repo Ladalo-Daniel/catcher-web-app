@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams, Navigate, Link } from 'react-router-dom';
+import { useSearchParams, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
 import { supabase } from '@/integrations/supabase/client';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
@@ -12,6 +12,8 @@ import { toast } from 'sonner';
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+    const location = useLocation();
+  
    const {loading, addItem } = useItems();
   const [verificationStatus, setVerificationStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
