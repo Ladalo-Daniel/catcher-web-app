@@ -12,7 +12,6 @@ import { toast } from 'sonner';
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
-    const location = useLocation();
   
    const {loading, addItem } = useItems();
   const [verificationStatus, setVerificationStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -22,17 +21,16 @@ const PaymentSuccess = () => {
 
    console.log("userrrr:", user)
 
+   const reference = searchParams.get('trxref');
+
 
   
     // 🧠 Handle verification after redirect
     useEffect(() => {
-      const query = new URLSearchParams(location.search);
-      const reference = query.get('reference');
-  
       if (reference && user) {
         verifyPayment(reference);
       }
-    }, [location.search, user]);
+    }, [reference, user]);
 
   const verifyPayment = async (reference: string) => {
   setVerificationStatus('loading');
