@@ -13,7 +13,7 @@ const PaymentSuccess = () => {
   const { user } = useAuth();
   
    const {loading, addItem } = useItems();
-  const [verificationStatus, setVerificationStatus] = useState<'loading' | 'success' | 'error'>('loading');
+  const [verificationStatus, setVerificationStatus] = useState<'loading' | 'verify' | 'success' | 'error'>('verify');
   const [errorMessage, setErrorMessage] = useState('');
   const [registeredItem, setRegisteredItem] = useState<any>(null);
   const [itemData, setItemData] = useState<any>(null);
@@ -35,11 +35,11 @@ useEffect(() => {
 
   
     // 🧠 Handle verification after redirect
-    useEffect(() => {
-      if (reference && user && itemData) {
-        verifyPayment(reference);
-      }
-    }, [reference, user, itemData]);
+    // useEffect(() => {
+    //   if (reference && user && itemData) {
+    //     verifyPayment(reference);
+    //   }
+    // }, [reference, user, itemData]);
 
   const verifyPayment = async (reference: string) => {
   setVerificationStatus('loading');``
@@ -93,6 +93,11 @@ useEffect(() => {
     setVerificationStatus('error');
   }
 };
+
+
+const handleVerifyPayment = () => {
+  verifyPayment(reference)
+}
 
 
   // if (!user) {
@@ -158,14 +163,25 @@ useEffect(() => {
                 </>
               ) : verificationStatus === 'error' ? (
                 <>
-                  <Button asChild>
-                    <Link to="/register">Try Again</Link>
+                  <Button onClick={() => setVerificationStatus('verify')}>
+                    Try Again
                   </Button>
                   <Button variant="outline" asChild>
                     <Link to="/">Go Home</Link>
                   </Button>
                 </>
               ) : null}
+            </div>
+
+            <div className="flex gap-4 justify-center">
+              {
+                verificationStatus === "verify" &&
+                <>
+                <Button onClick={handleVerifyPayment} className=' p-6 rounded-xl hover:opacity-75'>
+                   Click to Complete Item Upload!
+                  </Button>
+                </>
+              }
             </div>
           </CardContent>
         </Card>
