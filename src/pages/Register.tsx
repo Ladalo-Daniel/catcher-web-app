@@ -1,43 +1,72 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ItemForm } from '@/components/item-form';
 import { useAuth } from '@/hooks/use-auth';
-import { Navigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import PaystackPop from '@paystack/inline-js'
+import { useItems } from '@/hooks/use-items';
 
 const Register = () => {
   const { user } = useAuth();
+   const {loading, addItem } = useItems();
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  
-  // Redirect to auth if not logged in
+  const location = useLocation();
+  const navigate = useNavigate();
+   const secretKey = 'sk_live_a824ac84b15085c0a50f228cde621e4fc2d60490'; 
+
+
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
-  
-  const handleSubmit = async (data: any) => {
+
+ 
+
+  const handleSubmit = async (data) => {
+   
+    const reqPayload = {
+      email: user.email,
+      amount: 10000.00, // in kobo
+      callback_url: `https://catcher-test.vercel.app/payment-success`, // redirect here after payment
+    };
+
+    localStorage.setItem('itemData', JSON.stringify(data));
+
+    console.log("Dataaaaa", data);
+    console.log("reqPayload", reqPayload);
+    console.log("reqPayload22222", JSON.stringify(reqPayload));
+
+ 
     try {
       setIsProcessingPayment(true);
-      
-      // Create payment with Paystack
-      const { data: paymentData, error } = await supabase.functions.invoke('create-payment', {
-        body: {
-          email: user.email,
-          itemData: data,
+
+      const response = await fetch('https://api.paystack.co/transaction/initialize', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${secretKey}`,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify(reqPayload),
       });
 
-      if (error) {
-        throw new Error(error.message);
+      const result = await response.json();
+
+      if (!result.status) {
+        throw new Error(result.message || 'Failed to initialize transaction');
       }
 
-      // Redirect to Paystack payment page
-      window.location.href = paymentData.authorization_url;
+      console.log("first result", result);
+
+      const { authorization_url } = result.data;
+
+      window.location.href = authorization_url;
     } catch (error: any) {
-      console.error('Payment error:', error);
+      console.error('Payment error:', error.message);
       toast.error('Failed to process payment: ' + error.message);
       setIsProcessingPayment(false);
     }
   };
+
+
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-24">
@@ -54,7 +83,7 @@ const Register = () => {
             You will be redirected to Paystack to complete payment before your item is registered.
           </p>
         </div>
-        
+
         <div className="bg-card rounded-lg shadow-sm border p-6">
           <ItemForm onSubmit={handleSubmit} isLoading={isProcessingPayment} />
         </div>

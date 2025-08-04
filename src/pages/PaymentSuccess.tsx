@@ -5,46 +5,95 @@ import { supabase } from '@/integrations/supabase/client';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { useItems } from '@/hooks/use-items';
+import { toast } from 'sonner';
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+   const {loading, addItem } = useItems();
   const [verificationStatus, setVerificationStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
   const [registeredItem, setRegisteredItem] = useState<any>(null);
+   const secretKey = 'sk_live_a824ac84b15085c0a50f228cde621e4fc2d60490'; 
 
-  const reference = searchParams.get('reference');
 
-  useEffect(() => {
-    if (!reference) {
-      setVerificationStatus('error');
-      setErrorMessage('Payment reference not found');
-      return;
-    }
 
-    verifyPayment();
-  }, [reference]);
+  // const reference = searchParams.get('reference');
 
-  const verifyPayment = async () => {
+  // useEffect(() => {
+  //   if (!reference) {
+  //     setVerificationStatus('error');
+  //     setErrorMessage('Payment reference not found');
+  //     return;
+  //   }
+
+  //   verifyPayment(reference);
+  // }, [reference]);
+
+  
+    // 🧠 Handle verification after redirect
+    useEffect(() => {
+      const query = new URLSearchParams(location.search);
+      const reference = query.get('reference');
+  
+      if (reference) {
+        verifyPayment(reference);
+      }
+    }, [location.search]);
+
+   const verifyPayment = async (reference: string) => {
+    setVerificationStatus('loading');
+    setErrorMessage('');
+
+    const transactionId = String(reference); // ✅ Safe!
     try {
-      const { data, error } = await supabase.functions.invoke('verify-payment', {
-        body: { reference },
+      const response = await fetch(`https://api.paystack.co/transaction/verify/${transactionId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${secretKey}`,
+        },
       });
 
-      if (error) {
-        throw new Error(error.message);
+      const result = await response.json();
+
+      if (!result.status) {
+        throw new Error(result.message || 'Verification failed');
       }
 
-      if (data.success) {
+      console.log("verification result", result);
+
+      const { data } = result;
+
+      if (data.status === 'success') {
+
+       
+
+        toast.success('Payment successful!');
+        console.log("data", data);
+
+         const itemData = typeof window !== "undefined" ? localStorage.getItem('itemData') : null;
+
+        try {
+           await addItem(itemData)
+        } catch (error) {
+          toast.error('Failed to register item: ' + error.message);
+          console.log("erro:", error)
+        }
         setVerificationStatus('success');
-        setRegisteredItem(data.item);
+        setRegisteredItem(itemData);
+        // navigate('/success'); // Or any confirmation page
+        // Perform your success logic: store item, redirect, etc.
       } else {
-        throw new Error('Payment verification failed');
+        toast.error('Payment was not successful.');
       }
     } catch (error: any) {
-      console.error('Payment verification error:', error);
+      setErrorMessage(error.message);
+      console.error('Verification error:', error.message);
+      toast.error('Failed to verify transaction.');
+    } finally {
       setVerificationStatus('error');
-      setErrorMessage(error.message || 'Failed to verify payment');
     }
   };
 

@@ -68,7 +68,7 @@ export function ItemForm({ onSubmit, defaultValues, isLoading = false }: ItemFor
     try {
       onSubmit(values);
       if (!defaultValues) {
-        form.reset();
+        // form.reset();
       }
     } catch (error) {
       toast({
