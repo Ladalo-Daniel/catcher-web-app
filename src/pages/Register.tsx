@@ -26,7 +26,7 @@ const Register = () => {
     const reqPayload = {
       email: user.email,
       amount: 10000.00, // in kobo
-      callback_url: `https://catcher-test.vercel.app/payment-success`, // redirect here after payment
+      callback_url: `https://catcher-web-app.vercel.app/payment-success`, // redirect here after payment
     };
 
     localStorage.setItem('itemData', JSON.stringify(data));
