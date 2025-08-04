@@ -81,6 +81,7 @@ useEffect(() => {
         setVerificationStatus('success');
       } catch (error: any) {
         console.log("itemError:", error)
+        setVerificationStatus('verify');
         // toast.error('Failed to register item: ' + error.message);
       }
     } else {
