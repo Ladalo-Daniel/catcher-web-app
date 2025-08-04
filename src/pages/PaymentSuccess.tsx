@@ -91,6 +91,8 @@ useEffect(() => {
     setErrorMessage(error.message);
     toast.error('Failed to verify transaction.');
     setVerificationStatus('error');
+  } finally{
+    setVerificationStatus("verify")
   }
 };
 
