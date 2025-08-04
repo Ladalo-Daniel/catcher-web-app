@@ -20,19 +20,8 @@ const PaymentSuccess = () => {
   const [registeredItem, setRegisteredItem] = useState<any>(null);
    const secretKey = 'sk_live_a824ac84b15085c0a50f228cde621e4fc2d60490'; 
 
+   console.log("userrrr:", user)
 
-
-  // const reference = searchParams.get('reference');
-
-  // useEffect(() => {
-  //   if (!reference) {
-  //     setVerificationStatus('error');
-  //     setErrorMessage('Payment reference not found');
-  //     return;
-  //   }
-
-  //   verifyPayment(reference);
-  // }, [reference]);
 
   
     // 🧠 Handle verification after redirect
@@ -40,68 +29,68 @@ const PaymentSuccess = () => {
       const query = new URLSearchParams(location.search);
       const reference = query.get('reference');
   
-      if (reference) {
+      if (reference && user) {
         verifyPayment(reference);
       }
-    }, [location.search]);
+    }, [location.search, user]);
 
-   const verifyPayment = async (reference: string) => {
-    setVerificationStatus('loading');
-    setErrorMessage('');
+  const verifyPayment = async (reference: string) => {
+  setVerificationStatus('loading');
+  const transactionId = String(reference);
 
-    const transactionId = String(reference); // ✅ Safe!
-    try {
-      const response = await fetch(`https://api.paystack.co/transaction/verify/${transactionId}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${secretKey}`,
-        },
-      });
+  try {
+    const response = await fetch(`https://api.paystack.co/transaction/verify/${transactionId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${secretKey}`,
+      },
+    });
 
-      const result = await response.json();
+    const result = await response.json();
+    if (!result.status) throw new Error(result.message || 'Verification failed');
 
-      if (!result.status) {
-        throw new Error(result.message || 'Verification failed');
+    const { data } = result;
+    if (data.status === 'success') {
+      toast.success('Payment successful!');
+
+      // // 🧠 Check for user before using
+      // if (!user) {
+      //   toast.error('You must be logged in to register item!!!!!!.');
+      //   // setVerificationStatus('error');
+      //   return;
+      // }
+
+      const itemDataRaw = localStorage.getItem('itemData');
+      const itemData = itemDataRaw ? JSON.parse(itemDataRaw) : null;
+
+      if (!itemData) {
+        toast.error('Item data is missing.');
+        return;
       }
 
-      console.log("verification result", result);
-
-      const { data } = result;
-
-      if (data.status === 'success') {
-
-       
-
-        toast.success('Payment successful!');
-        console.log("data", data);
-
-         const itemData = typeof window !== "undefined" ? localStorage.getItem('itemData') : null;
-
-        try {
-           await addItem(itemData)
-        } catch (error) {
-          toast.error('Failed to register item: ' + error.message);
-          console.log("erro:", error)
-        }
-        setVerificationStatus('success');
+      try {
+         await addItem(itemData, user); // ✅ Assuming this takes item and user
         setRegisteredItem(itemData);
-        // navigate('/success'); // Or any confirmation page
-        // Perform your success logic: store item, redirect, etc.
-      } else {
-        toast.error('Payment was not successful.');
+        setVerificationStatus('success');
+      } catch (error: any) {
+        console.log("itemError:", error)
+        toast.error('Failed to register item: ' + error.message);
       }
-    } catch (error: any) {
-      setErrorMessage(error.message);
-      console.error('Verification error:', error.message);
-      toast.error('Failed to verify transaction.');
-    } finally {
+    } else {
+      toast.error('Payment was not successful.');
       setVerificationStatus('error');
     }
-  };
-
-  if (!user) {
-    return <Navigate to="/auth" replace />;
+  } catch (error: any) {
+    setErrorMessage(error.message);
+    toast.error('Failed to verify transaction.');
+    setVerificationStatus('error');
   }
+};
+
+
+  // if (!user) {
+  //   return <Navigate to="/auth" replace />;
+  // }
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-24">

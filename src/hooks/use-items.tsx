@@ -56,7 +56,7 @@ export const useItems = () => {
   };
 
   // Add new item
-  const addItem = async (itemData: any) => {
+  const addItem = async (itemData: any, user:any) => {
     if (!user) {
       toast({
         title: "Error",
