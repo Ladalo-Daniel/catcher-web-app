@@ -42,9 +42,10 @@ export default function Auth() {
       });
     } else {
       toast({
-        title: "Check your email",
-        description: "We've sent you a confirmation link to complete your registration."
+        title: "Registeration successfull!!",
+        // description: "We've sent you a confirmation link to complete your registration."
       });
+      navigate("/")
     }
     setLoading(false);
   };
@@ -61,6 +62,12 @@ export default function Auth() {
         description: error.message,
         variant: "destructive"
       });
+    } else{
+       toast({
+        title: "Login successfull!!",
+        // description: "We've sent you a confirmation link to complete your registration."
+      });
+      navigate("/")
     }
     setLoading(false);
   };
