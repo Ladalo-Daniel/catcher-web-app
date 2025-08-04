@@ -173,7 +173,7 @@ export default function Auth() {
             </TabsContent>
           </Tabs>
           
-          <div className="mt-6">
+          {/* <div className="mt-6">
             <Separator className="my-4" />
             <p className="text-center text-sm text-muted-foreground mb-4">
               Or continue with
@@ -198,7 +198,7 @@ export default function Auth() {
                 GitHub
               </Button>
             </div>
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </div>
