@@ -81,19 +81,17 @@ useEffect(() => {
         setVerificationStatus('success');
       } catch (error: any) {
         console.log("itemError:", error)
-        toast.error('Failed to register item: ' + error.message);
+        // toast.error('Failed to register item: ' + error.message);
       }
     } else {
       toast.error('Payment was not successful.');
-      setVerificationStatus('error');
+      setVerificationStatus('verify');
     }
   } catch (error: any) {
     setErrorMessage(error.message);
     toast.error('Failed to verify transaction.');
-    setVerificationStatus('error');
-  } finally{
-    setVerificationStatus("verify")
-  }
+    setVerificationStatus('verify');
+  } 
 };
 
 
