@@ -42,12 +42,12 @@ useEffect(() => {
     // }, [reference, user, itemData]);
 
   const verifyPayment = async (reference: string) => {
-  setVerificationStatus('loading');``
-  const transactionId = String(reference);
-
-  console.log("transactionId:", transactionId);
-
-  try {
+    const transactionId = String(reference);
+    
+    console.log("transactionId:", transactionId);
+    
+    try {
+    setVerificationStatus('loading');``
     const response = await fetch(`https://api.paystack.co/transaction/verify/${transactionId}`, {
       method: 'GET',
       headers: {
