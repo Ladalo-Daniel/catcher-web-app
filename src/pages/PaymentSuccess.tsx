@@ -17,6 +17,7 @@ const PaymentSuccess = () => {
   const [verificationStatus, setVerificationStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
   const [registeredItem, setRegisteredItem] = useState<any>(null);
+  const [itemData, setItemData] = useState<any>(null);
    const secretKey = 'sk_live_a824ac84b15085c0a50f228cde621e4fc2d60490'; 
 
    console.log("userrrr:", user)
@@ -24,13 +25,22 @@ const PaymentSuccess = () => {
    const reference = searchParams.get('trxref');
 
 
+useEffect(() => {
+  const itemDataRaw = localStorage.getItem('itemData');
+  if (itemDataRaw) {
+    setItemData(JSON.parse(itemDataRaw));
+  }
+}, []);
+
+
+
   
     // 🧠 Handle verification after redirect
     useEffect(() => {
-      if (reference && user) {
+      if (reference && user && itemData) {
         verifyPayment(reference);
       }
-    }, [reference, user]);
+    }, [reference, user, itemData]);
 
   const verifyPayment = async (reference: string) => {
   setVerificationStatus('loading');
@@ -58,8 +68,6 @@ const PaymentSuccess = () => {
       //   return;
       // }
 
-      const itemDataRaw = localStorage.getItem('itemData');
-      const itemData = itemDataRaw ? JSON.parse(itemDataRaw) : null;
 
       if (!itemData) {
         toast.error('Item data is missing.');
