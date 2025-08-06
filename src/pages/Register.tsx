@@ -25,15 +25,17 @@ const Register = () => {
    
     const reqPayload = {
       email: user.email,
-      amount: 10000.00, // in kobo
+      // amount: 10000.00, // in kobo
+      amount: 500000.00, // in kobo
       callback_url: `https://catcher-web-app.vercel.app/payment-success`, // redirect here after payment
+
     };
 
     localStorage.setItem('itemData', JSON.stringify(data));
 
-    console.log("Dataaaaa", data);
-    console.log("reqPayload", reqPayload);
-    console.log("reqPayload22222", JSON.stringify(reqPayload));
+    // console.log("Dataaaaa", data);
+    // console.log("reqPayload", reqPayload);
+    // console.log("reqPayload22222", JSON.stringify(reqPayload));
 
  
     try {
@@ -54,13 +56,13 @@ const Register = () => {
         throw new Error(result.message || 'Failed to initialize transaction');
       }
 
-      console.log("first result", result);
+      // console.log("first result", result);
 
       const { authorization_url } = result.data;
 
       window.location.href = authorization_url;
     } catch (error: any) {
-      console.error('Payment error:', error.message);
+      // console.error('Payment error:', error.message);
       toast.error('Failed to process payment: ' + error.message);
       setIsProcessingPayment(false);
     }
