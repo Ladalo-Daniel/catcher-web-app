@@ -46,7 +46,7 @@ const itemCategories = [
   "Other"
 ];
 
-export function ItemForm({ onSubmit, defaultValues, isLoading = false }: ItemFormProps) {
+export function ItemForm({ onSubmit, defaultValues, isLoading  }: ItemFormProps) {
   const { toast } = useToast();
   
   const form = useForm<ItemFormValues>({
@@ -253,10 +253,21 @@ export function ItemForm({ onSubmit, defaultValues, isLoading = false }: ItemFor
             )}
           />
         </div>
+       {
+        defaultValues ? 
+        (
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ?  "Updating..." : "Update Item"}
+        </Button>
 
+        ) :
+        (
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? "Processing Payment..." : defaultValues ? "Update Item" : "Proceed to Payment (₦5,000)"}
         </Button>
+
+        )
+       }
       </form>
     </Form>
   );

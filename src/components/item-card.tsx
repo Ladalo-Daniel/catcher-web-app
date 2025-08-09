@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Item } from '@/types/item';
 import { StatusBadge } from '@/components/ui/status-badge';
-import { CalendarClock, Package2, ScanLine } from 'lucide-react';
+import { CalendarClock, MoreVertical, Package2, ScanLine } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from './ui/dropdown-menu';
+import EditItemModal from './items/EditItemModal';
+import DeleteItemModal from './items/DeleteModal';
 
 interface ItemCardProps {
   item: Item;
@@ -13,8 +21,13 @@ interface ItemCardProps {
 }
 
 export function ItemCard({ item, onStatusChange, showActions = true }: ItemCardProps) {
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openDelModal, setOpenDelModal] = useState<boolean>(false);
+
   return (
     <Card className="item-card overflow-hidden border-b-2 border-b-primary/20">
+      {openModal && <EditItemModal item={item} openeModal={openModal} setIsOpenModal={() => setOpenModal(false)} />}
+      {openDelModal && <DeleteItemModal item={item} openeModal={openDelModal} setIsOpenModal={() => setOpenDelModal(false)} />}
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <div>
@@ -24,18 +37,41 @@ export function ItemCard({ item, onStatusChange, showActions = true }: ItemCardP
               {item.category || 'Uncategorized'}
             </CardDescription>
           </div>
-          <StatusBadge status={item.status} />
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <span className="text-lg cursor-pointer">
+                <MoreVertical />
+              </span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => setOpenModal(true)}>
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setOpenDelModal(true)}>
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </CardHeader>
+
       <CardContent className="pb-4">
         <div className="grid gap-2">
           <div className="flex items-center gap-2 text-sm">
             <ScanLine className="h-4 w-4 text-primary" />
             <span className="font-mono font-medium">{item.serial_number}</span>
           </div>
+
           {item.description && (
             <p className="text-sm text-muted-foreground">{item.description}</p>
           )}
+
+          <div className="flex items-center gap-1">
+            <CalendarClock className="h-3 w-3" />
+            <span>Updated {formatDistanceToNow(new Date(item.updated_at))} ago</span>
+          </div>
+        
           {item.image_url && (
             <div className="mt-2 overflow-hidden rounded-md">
               <img 
@@ -47,12 +83,9 @@ export function ItemCard({ item, onStatusChange, showActions = true }: ItemCardP
           )}
         </div>
       </CardContent>
+
       <CardFooter className="flex justify-between pt-0 pb-3 text-xs text-muted-foreground">
-        <div className="flex items-center gap-1">
-          <CalendarClock className="h-3 w-3" />
-          <span>Updated {formatDistanceToNow(new Date(item.updated_at))} ago</span>
-        </div>
-        
+        <StatusBadge status={item.status} />
         {showActions && onStatusChange && item.status !== 'stolen' && (
           <Button 
             variant="destructive" 

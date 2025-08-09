@@ -10,10 +10,10 @@ const MyItems = () => {
   const { items, loading, updateItemStatus } = useItems();
   const { user } = useAuth();
   
-  // Redirect to auth if not logged in
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
+  // // Redirect to auth if not logged in
+  // if (!user) {
+  //   return <Navigate to="/auth" replace />;
+  // }
   
   const handleStatusToggle = async (id: string) => {
     const item = items.find(item => item.id === id);

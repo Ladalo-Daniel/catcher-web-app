@@ -22,7 +22,7 @@ export interface Item {
 
 export const useItems = () => {
   const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -122,6 +122,14 @@ export const useItems = () => {
       if (error) throw error;
 
       setItems(prev => prev.map(item => item.id === id ? data : item));
+
+       toast({
+        title: "Item updated",
+        description: `Item has been updated successfully`,
+      });
+
+      window.location.reload(); // Refresh page to reflect changes
+
       
       return data;
     } catch (error) {
@@ -149,11 +157,13 @@ export const useItems = () => {
       if (error) throw error;
 
       setItems(prev => prev.filter(item => item.id !== id));
+
       
       toast({
         title: "Item Deleted",
         description: "Item has been removed from your registry",
       });
+      window.location.reload(); // Refresh page to reflect changes
     } catch (error) {
       console.error('Error deleting item:', error);
       toast({
@@ -265,6 +275,7 @@ export const useItems = () => {
   return {
     items,
     loading,
+    setLoading,
     addItem,
     updateItem,
     deleteItem,
