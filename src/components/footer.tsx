@@ -85,9 +85,9 @@ export function Footer() {
         
         <div className="border-t border-border/50 mt-8 pt-6 text-center text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} Catcher. All rights reserved.</p>
-          {new Date() > new Date('2025-08-09') && (
+          {/* {new Date() > new Date('2025-08-09') && (
             <p className="mt-1">This is a demo application. Items registered here are not stored permanently.</p>
-          )}
+          )} */}
         </div>
       </div>
     </footer>
