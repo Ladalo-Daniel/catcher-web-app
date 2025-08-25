@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Item } from '@/types/item';
 import { StatusBadge } from '@/components/ui/status-badge';
-import { CalendarClock, MoreVertical, Package2, ScanLine } from 'lucide-react';
+import { CalendarClock, Contact, MoreVertical, Package2, ScanLine, User } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { 
   DropdownMenu, 
@@ -67,10 +67,24 @@ export function ItemCard({ item, onStatusChange, showActions = true }: ItemCardP
             <p className="text-sm text-muted-foreground">{item.description}</p>
           )}
 
+          
+            <div className="flex items-center gap-2 text-sm">
+            <User className="h-4 w-4 text-primary" />
+            <span className="font-mono font-medium">{item.owner}</span>
+          </div>
+
+            <div className="flex items-center gap-2 text-sm">
+              <Contact className="h-4 w-4 text-primary" />
+              <span className="font-mono font-medium">{item.contact_info}</span>
+            </div>
+
+         
+
           <div className="flex items-center gap-1">
             <CalendarClock className="h-3 w-3" />
             <span>Updated {formatDistanceToNow(new Date(item.updated_at))} ago</span>
           </div>
+
         
           {item.image_url && (
             <div className="mt-2 overflow-hidden rounded-md">
