@@ -42,8 +42,8 @@ const App = () => (
                   <Route path="/payment-success" element={<PaymentSuccess />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-              </main> */}
-              <Footer />
+              </main>
+              <Footer /> */}
             </div>
           </BrowserRouter>
         </TooltipProvider>
