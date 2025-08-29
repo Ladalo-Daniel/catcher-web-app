@@ -30,8 +30,8 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <div className="flex flex-col min-h-screen">
-              {/* <div className=" self-center text-4xl items-center p-9 animate-pulse">Loading...</div> */}
-              <NavBar />
+              <div className=" self-center text-4xl items-center p-9 animate-pulse">Loading...</div>
+              {/* <NavBar />
               <main className="flex-1 pt-16">
                 <Routes>
                   <Route path="/" element={<Index />} />
@@ -42,7 +42,7 @@ const App = () => (
                   <Route path="/payment-success" element={<PaymentSuccess />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-              </main>
+              </main> */}
               <Footer />
             </div>
           </BrowserRouter>
