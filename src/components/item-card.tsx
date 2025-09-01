@@ -13,6 +13,7 @@ import {
 } from './ui/dropdown-menu';
 import EditItemModal from './items/EditItemModal';
 import DeleteItemModal from './items/DeleteModal';
+import ItemStatusLocationModal from './items/ItemStatusLocationModal';
 
 interface ItemCardProps {
   item: Item;
@@ -23,11 +24,13 @@ interface ItemCardProps {
 export function ItemCard({ item, onStatusChange, showActions = true }: ItemCardProps) {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openDelModal, setOpenDelModal] = useState<boolean>(false);
+  const [openStatusModal, setOpenStatusModal] = useState<boolean>(false);
 
   return (
     <Card className="item-card overflow-hidden border-b-2 border-b-primary/20">
       {openModal && <EditItemModal item={item} openeModal={openModal} setIsOpenModal={() => setOpenModal(false)} />}
       {openDelModal && <DeleteItemModal item={item} openeModal={openDelModal} setIsOpenModal={() => setOpenDelModal(false)} />}
+      {openStatusModal && <ItemStatusLocationModal handlerFunc={onStatusChange} item={item} openeModal={openStatusModal} setIsOpenModal={() => setOpenStatusModal(false)} />}
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <div>
@@ -105,7 +108,7 @@ export function ItemCard({ item, onStatusChange, showActions = true }: ItemCardP
             variant="destructive" 
             size="sm" 
             className="h-7 text-xs"
-            onClick={() => onStatusChange(item.id)}
+            onClick={() => setOpenStatusModal(true)}
           >
             Mark as Stolen
           </Button>
@@ -116,7 +119,7 @@ export function ItemCard({ item, onStatusChange, showActions = true }: ItemCardP
             variant="outline" 
             size="sm"
             className="h-7 text-xs"
-            onClick={() => onStatusChange(item.id)}
+            onClick={() => setOpenStatusModal(true)}
           >
             Mark as Found
           </Button>
