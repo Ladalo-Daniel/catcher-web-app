@@ -208,7 +208,7 @@ export function ItemForm({ onSubmit, defaultValues, isLoading }: {
             name="owner"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Owner</FormLabel>
+                <FormLabel>Owner Full Name</FormLabel>
                 <FormControl><Input placeholder="Jane Smith" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
@@ -285,7 +285,7 @@ export function ItemForm({ onSubmit, defaultValues, isLoading }: {
               type="file"
               accept="image/*"
               multiple
-              capture="environment"
+              // capture="environment"
             
               onChange={handleFileSelect}
               className="my-3 border-dashed w-full border-2 p-6 rounded text-center cursor-pointer"
