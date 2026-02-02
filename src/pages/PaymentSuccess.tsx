@@ -17,7 +17,7 @@ const PaymentSuccess = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [registeredItem, setRegisteredItem] = useState<any>(null);
   const [itemData, setItemData] = useState<any>(null);
-   const secretKey = 'sk_live_a824ac84b15085c0a50f228cde621e4fc2d60490'; 
+   const secretKey = import.meta.env.VITE_PAYSTACK_SECRET_KEY; 
 
    console.log("userrrr:", user)
 

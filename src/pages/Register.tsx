@@ -12,7 +12,7 @@ const Register = () => {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-   const secretKey = 'sk_live_a824ac84b15085c0a50f228cde621e4fc2d60490'; 
+   const secretKey = import.meta.env.VITE_PAYSTACK_SECRET_KEY; 
 
 
   if (!user) {
